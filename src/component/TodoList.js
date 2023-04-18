@@ -1,41 +1,29 @@
 import Todo from './Todo';
+import { useSelector } from 'react-redux';
 
-function TodoList({ toDos, handleDone }) {
+function TodoList() {
+  const state = useSelector((state) => state.todo);
+  // console.log(state);
+  const working = state
+    .filter((todo) => todo.isDone === false)
+    .map((todo) => {
+      // console.log(todo);
+      return <Todo key={todo.id} todo={todo} />;
+    });
+
+  const done = state
+    .filter((todo) => todo.isDone === true)
+    .map((todo) => <Todo key={todo.id} todo={todo} />);
+
   return (
     <div>
       <div id="stateWorking">
         <p>Working.. 🔥</p>
-        {toDos
-          .filter((a) => a.isDone === false)
-          .map((a) => {
-            return (
-              <Todo
-                key={a.id}
-                title={a.title}
-                content={a.content}
-                isDone={a.isDone}
-                handleDone={handleDone}
-                todo={a}
-              />
-            );
-          })}
+        {working}
       </div>
       <div id="stateDone">
         <p>Done..!🎉</p>
-        {toDos
-          .filter((a) => a.isDone !== false)
-          .map((a) => {
-            return (
-              <Todo
-                key={a.id}
-                title={a.title}
-                content={a.content}
-                isDone={a.isDone}
-                handleDone={handleDone}
-                todo={a}
-              />
-            );
-          })}
+        {done}
       </div>
     </div>
   );

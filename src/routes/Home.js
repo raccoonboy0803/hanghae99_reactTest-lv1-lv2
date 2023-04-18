@@ -1,42 +1,31 @@
 import TodoList from '../component/TodoList';
 import styles from './Home.module.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { todoActions } from '../store/store';
 
 function Home() {
+  const state = useSelector((state) => state.todo);
   const [toDo, setToDo] = useState({
-    id: '',
     title: '',
     content: '',
-    isDone: false,
   }); //todo
-  const [toDos, setToDos] = useState([]); //todo list
   const { title, content } = toDo; //구조분해할당
   const change = (e) => {
     const { value, name } = e.target;
     setToDo({
       ...toDo,
       [name]: value,
-      id: Date.now(),
     });
   };
+  const dispatch = useDispatch();
   const onSubmit = (e) => {
     e.preventDefault();
-    setToDos((pre) => [...pre, toDo]);
+    dispatch(todoActions.add(toDo));
     setToDo({
-      id: '',
       title: '',
       content: '',
-      isDone: false,
     });
-  };
-  const handleDone = (todo) => {
-    const newToDos = toDos.map((item) => {
-      if (item.id === todo.id) {
-        return { ...item, isDone: !item.isDone };
-      }
-      return item;
-    });
-    setToDos(newToDos);
   };
 
   return (
@@ -70,9 +59,7 @@ function Home() {
           <button className={styles.btn}>추가하기</button>
         </form>
       </div>
-      <div>
-        <TodoList toDos={toDos} handleDone={handleDone} />
-      </div>
+      <div>{state && <TodoList />}</div>
     </div>
   );
 }
